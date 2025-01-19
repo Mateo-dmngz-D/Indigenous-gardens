@@ -1,78 +1,102 @@
-// Function to load CSV and convert to JSON
-async function loadCSV() {
-  try {
-    const response = await fetch('flowers.csv');
-    if (!response.ok) {
-      throw new Error('Network response was not ok ' + response.statusText);
-    }
-    const csvText = await response.text();
-    return csvToJSON(csvText);
-  } catch (error) {
-    console.error('Error loading CSV:', error);
-    return [];
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  populateFilterOptions();
+  loadCSVData();
+});
+
+const flowerTypes = ['All', 'Biennials', 'Perennials'];
+const flowerColors = ['All', 'Red', 'Purple', 'Orange', 'Yellow'];
+const bloomPeriods = ['All', 'Spring', 'Summer', 'Autumn', 'Winter'];
+
+let flowersData = [];
+
+function populateFilterOptions() {
+  const typeSelect = document.getElementById('flower-type');
+  const colorSelect = document.getElementById('flower-color');
+  const bloomPeriodSelect = document.getElementById('flower-bloom_period');
+
+  flowerTypes.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type;
+      option.textContent = type;
+      typeSelect.appendChild(option);
+  });
+
+  flowerColors.forEach(color => {
+      const option = document.createElement('option');
+      option.value = color;
+      option.textContent = color;
+      colorSelect.appendChild(option);
+  });
+
+  bloomPeriods.forEach(period => {
+      const option = document.createElement('option');
+      option.value = period;
+      option.textContent = period;
+      bloomPeriodSelect.appendChild(option);
+  });
 }
 
-// Function to convert CSV to JSON
-function csvToJSON(csv) {
+function loadCSVData() {
+  fetch('flowers.csv')
+      .then(response => response.text())
+      .then(data => {
+          flowersData = csvToJson(data);
+      });
+}
+
+function csvToJson(csv) {
   const lines = csv.split('\n');
   const headers = lines[0].split(',');
-  const jsonData = lines.slice(1).map(line => {
-    const data = line.split(',');
-    const obj = {};
-    headers.forEach((header, index) => {
-      obj[header.trim()] = data[index].trim();
-    });
-    return obj;
+  return lines.slice(1).map(line => {
+      const values = line.split(',');
+      return headers.reduce((obj, header, index) => {
+          obj[header.trim()] = values[index].trim();
+          return obj;
+      }, {});
   });
-  return jsonData;
 }
 
-// Function to filter flowers and update the table
-async function filterFlowers() {
+function filterFlowers() {
   const type = document.getElementById('flower-type').value;
   const color = document.getElementById('flower-color').value;
-  const flowers = await loadCSV();
+  const bloomPeriod = document.getElementById('flower-bloom_period').value;
 
-  console.log('Loaded flowers:', flowers);
+  const filteredFlowers = flowersData.filter(flower => 
+      flower.Type === type && 
+      flower.Color === color && 
+      flower.BloomPeriod === bloomPeriod
+  );
 
-  const filteredFlowers = flowers.filter(flower => {
-    return (type === 'all' || flower.Type.toLowerCase() === type) &&
-           (color === 'all' || flower.Color.toLowerCase() === color);
-  });
+  displayFilteredFlowers(filteredFlowers);
+}
 
-  console.log('Filtered flowers:', filteredFlowers);
-
+function displayFilteredFlowers(flowers) {
   const tableBody = document.getElementById('flower-table').querySelector('tbody');
   tableBody.innerHTML = '';
 
-  filteredFlowers.forEach(flower => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${flower.Type}</td>
-      <td>${flower['Latin Name']}</td>
-      <td>${flower['Common Name']}</td>
-      <td>${flower.Color}</td>
-      <td>${flower['Bloom Period']}</td>
-      <td><img src="${flower.Photo}" alt="${flower['Common Name']}" style="max-width: 100px;"></td>
-    `;
-    row.addEventListener('click', () => displayFlowerInfo(flower));
-    tableBody.appendChild(row);
+  flowers.forEach(flower => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+          <td>${flower.Type}</td>
+          <td>${flower.LatinName}</td>
+          <td>${flower.CommonName}</td>
+          <td>${flower.Color}</td>
+          <td>${flower.BloomPeriod}</td>
+          <td><button onclick="displayFlowerInfo('${flower.LatinName}')">Select</button></td>
+      `;
+      tableBody.appendChild(row);
   });
 }
 
-// Function to display flower information
-function displayFlowerInfo(flower) {
-  const flowerInfo = document.getElementById('flower-info');
-  flowerInfo.innerHTML = `
-    <h3>Type: ${flower.Type}</h3>
-    <p>Latin Name: ${flower['Latin Name']}</p>
-    <p>Common Name: ${flower['Common Name']}</p>
-    <p>Color: ${flower.Color}</p>
-    <p>Bloom Period: ${flower['Bloom Period']}</p>
-    <img src="${flower.Photo}" alt="${flower['Common Name']}" style="max-width: 100%;">
+function displayFlowerInfo(latinName) {
+  const flower = flowersData.find(flower => flower.LatinName === latinName);
+  const flowerInfoDiv = document.getElementById('flower-info');
+  flowerInfoDiv.innerHTML = `
+      <h3>Type: ${flower.Type}</h3>
+      <p>Latin Name: ${flower.LatinName}</p>
+      <p>Common Name: ${flower.CommonName}</p>
+      <p>Color: ${flower.Color}</p>
+      <p>Bloom Period: ${flower.BloomPeriod}</p>
+      <img src="${flower.Photo}" alt="${flower.CommonName}">
   `;
 }
-
-// Initial load of flowers
-filterFlowers();
