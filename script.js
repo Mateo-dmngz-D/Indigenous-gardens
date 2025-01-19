@@ -100,11 +100,21 @@ function selectFlower(latinName) {
     document.getElementById('flower-type-info').textContent = selectedFlower['Type'];
     document.getElementById('flower-color-info').textContent = selectedFlower['Color'];
     document.getElementById('flower-bloom-period').textContent = selectedFlower['Bloom Period'];
-    document.getElementById('flower-photo').src = Image.src.replace('flower-photo', selectedFlower['Photo']); 
+    document.getElementById('flower-photo').src = selectedFlower['Photo'];
   }
 }
 
 function displayDebugInfo(message) {
   const debugInfoDiv = document.getElementById('title-info');
   debugInfoDiv.innerHTML += `<p>${message}</p>`;
+}
+
+function getType (latinName) {
+  const flower = jsonData.find(flower => flower['Latin Name'] === latinName);
+  return flower['Type'];
+}
+
+function getColor (latinName) {
+  const flower = jsonData.find(flower => flower['Latin Name'] === latinName);
+  return flower['Color'];
 }
