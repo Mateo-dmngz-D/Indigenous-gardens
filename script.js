@@ -14,6 +14,7 @@ let curY;
 
 
 // update mouse pointer coordinates
+// lol testing
 document.addEventListener("mousemove", (e) => {
     curX = e.pageX;
     curY = e.pageY;
