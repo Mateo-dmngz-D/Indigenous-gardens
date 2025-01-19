@@ -1,0 +1,11 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #c8f4ab;
+}
+
+.about {
+    margin-top: 60px; /* Adds spacing above the container */
+}
