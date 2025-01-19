@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   const flowerTypes = ['All', 'biennials', 'perennials', 'shrubs', 'trees'];
-  const flowerColors = ['All', 'Red', 'Purple', 'White', 'Mauve', 'Orange', 'Lilac', 'Blue', 'Yellow'];
+  const flowerColors = ['All', 'Red', 'Purple', 'White', 'Mauve', 'Orange', 'Lilac', 'Blue', 'Yellow', 'Lavender', 'Pink', 'Purple', 'Scarlett', 'Violet'];
   const bloomPeriods = ['All', 'May-June', 'July-August', 'May'];
   
   function populateFilterOptions() {
