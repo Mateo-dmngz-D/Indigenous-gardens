@@ -94,30 +94,44 @@ function draw_given_plant(x, y, colour, type) {
     }
 }
 
+colour_choices = {
+    "Blue": "rgb(0, 150, 255)",
+    "Lavender" : "rgb(230, 230, 250)",
+    "Lilac": "rgb(210,175,255)",
+    "Mauve": "rgb(224, 176, 255)",
+    "Orange" : "rgb(242, 140, 40)",
+    "Pink": "rgb(255, 182, 193)",
+    "Light Purple": "rgb(195, 177, 225)",
+    "Purple": "rgb(128, 0, 128)",
+    "Red": "rgb(196, 30, 58)",
+    "Scarlett": "rgb(255, 36, 0)",
+    "Violet":"rgb(127, 0, 255)",
+    "White": "rgb(255, 255, 255)",
+    "Yellow": "rgb(255, 215, 0)",
+    "other": make_random_colour()
+};
+
 function addPlant() {
     let plant = {
         x : curX,
         y : curY,
-        type: get_random_type(),
-        colour : "rgb("+ (255*Math.random()) + ","+ (255*Math.random()) + ","+ (255*Math.random())+")"
+        type: currType,
+        colour : colour_choices[currColour]
     };
     planted.push(plant);
 }
 
 function draw() {
-        clear();
+    clear();
       
-      let fLen = planted.length; 
-      for (let i = 0; i < fLen; i++) {
-        draw_given_plant(planted[i].x, planted[i].y, planted[i].colour, planted[i].type);
-      }
+    let fLen = planted.length; 
+    for (let i = 0; i < fLen; i++) {
+    draw_given_plant(planted[i].x, planted[i].y, planted[i].colour, planted[i].type);
+    }
 
-      if(on) {
-        ctx.fillStyle = "rgb(255,255,255)";
-        ctx.beginPath();
-        ctx.arc(curX, curY, 30, degToRad(0), degToRad(360), false);
-        ctx.fill();
-      }
+    //   if(on) {
+    //     ctx.fill
+    //   }
 }
 
 function create_petals(x, y, scale, rotation, colour) {
@@ -252,11 +266,138 @@ function degToRad(degrees) {
 function get_random_type() {
     let number = Math.random();
     if (number < 0.25) {
-        return "shrubs";
+        return "Shrubs";
     } else if (number < 0.5) {
-        return "trees";
+        return "Trees";
     } else if (number < 0.75) {
-        return "vines";
+        return "Vines";
     }
-    return "perennials";
+    return "Perennials";
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    displayDebugInfo('DOM fully loaded and parsed');
+    populateFilterOptions();
+    loadCSVData();
+  });
+  
+  const flowerTypes = ['All', 'biennials', 'perennials', 'shrubs', 'trees'];
+  const flowerColors = ['All', 'Red', 'Purple', 'White', 'Mauve', 'Orange', 'Lilac', 'Blue', 'Yellow'];
+  const bloomPeriods = ['All', 'May-June', 'July-August', 'May'];
+  
+  function populateFilterOptions() {
+    const typeSelect = document.getElementById('flower-type');
+    const colorSelect = document.getElementById('flower-color');
+    const bloomPeriodSelect = document.getElementById('flower-bloom_period');
+  
+    populateSelect(typeSelect, flowerTypes);
+    populateSelect(colorSelect, flowerColors);
+    populateSelect(bloomPeriodSelect, bloomPeriods);
+  }
+  
+  function populateSelect(selectElement, options) {
+    for(let i = 0; i < options.length; i++) {
+      const option = options[i];
+      const optionElement = document.createElement('option');
+      optionElement.textContent = option;
+      optionElement.value = option;
+      selectElement.appendChild(optionElement);
+    }
+  }
+  
+  function loadCSVData() {
+    fetch('clean_plants_data.csv')
+      .then(response => response.text())
+      .then(data => {;
+        jsonData = csvToJson(data);
+        populateTable(jsonData);
+      })
+  }
+  
+  function csvToJson(csvData) {
+    const lines = csvData.split('\n');
+    const headers = lines[0].split(',');
+  
+    const jsonResult = lines.slice(1).map(line => {
+      const values = line.split(',');
+      if (values.length !== headers.length) {
+        return null;
+      }
+      const jsonObject = {};
+      headers.forEach((header, index) => {
+        jsonObject[header.trim()] = values[index].trim();
+      });
+      return jsonObject;
+    }).filter(item => item !== null);
+  
+    return jsonResult;
+  }
+  
+  function populateTable(data) {
+    const tableBody = document.querySelector('#flower-table tbody');
+    tableBody.innerHTML = '';
+  
+    data.forEach(flower => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${flower['Latin Name']}</td>
+        <td>${flower['Common Name']}</td>
+        <td>${flower['Type']}</td>
+        <td>${flower['Color']}</td>
+        <td>${flower['Bloom Period']}</td>
+        <td><button onclick="selectFlower('${flower['Latin Name']}')">Select</button></td>
+      `;
+      tableBody.appendChild(row);
+    });
+  }
+  
+  function filterFlowers(jsonData, type, color, bloomPeriod) {
+    return jsonData.filter(flower => {
+      const matchesType = type === 'All' || flower['Type'] === type;
+      const matchesColor = color === 'All' || flower['Color'] === color;
+      const matchesBloomPeriod = bloomPeriod === 'All' || flower['Bloom Period'] === bloomPeriod;
+      return matchesType && matchesColor && matchesBloomPeriod;
+    });
+  }
+  
+  function updateTableWithFilters() {
+    const typeSelect = document.getElementById('flower-type').value;
+    const colorSelect = document.getElementById('flower-color').value;
+    const bloomPeriodSelect = document.getElementById('flower-bloom_period').value;
+  
+    const filteredData = filterFlowers(jsonData, typeSelect, colorSelect, bloomPeriodSelect);
+    populateTable(filteredData);
+  }
+  
+  function selectFlower(latinName) {
+    const selectedFlower = jsonData.find(flower => flower['Latin Name'] === latinName);
+    if (selectedFlower) {
+      document.getElementById('flower-latin-name').textContent = selectedFlower['Latin Name'];
+      document.getElementById('flower-common-name').textContent = selectedFlower['Common Name'];
+      document.getElementById('flower-type-info').textContent = selectedFlower['Type'];
+      document.getElementById('flower-color-info').textContent = selectedFlower['Color'];
+      document.getElementById('flower-bloom-period').textContent = selectedFlower['Bloom Period'];
+      document.getElementById('flower-photo').src = selectedFlower['Photo'];
+
+      currColour = getColor(selectedFlower['Latin Name']);
+      currType = getType(selectedFlower['Latin Name']);
+    }
+  }
+
+  let currColour;
+  let currType;
+  
+  function displayDebugInfo(message) {
+    const debugInfoDiv = document.getElementById('title-info');
+    debugInfoDiv.innerHTML += `<p>${message}</p>`;
+  }
+  
+  function getType (latinName) {
+    const flower = jsonData.find(flower => flower['Latin Name'] === latinName);
+    return flower['Type'];
+  }
+  
+  function getColor (latinName) {
+    const flower = jsonData.find(flower => flower['Latin Name'] === latinName);
+    return flower['Color'];
+  }
