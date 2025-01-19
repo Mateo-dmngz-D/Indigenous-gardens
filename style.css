@@ -10,6 +10,11 @@ body {
     margin-top: 60px; /* Adds spacing above the container */
 }
 
-.name {
+.Main_Head {
     text-align: center; /* Aligns our text in the center */
 }
+
+.Heading_Two {
+    text-align: left;
+}
+
