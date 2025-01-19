@@ -1,15 +1,36 @@
-* {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
+/* Base styles */
 body {
-    background: #c8f4ab;
+    display: flex;
+    font-family: Arial, sans-serif;
 }
 
-.about {
-    margin-top: 60px; /* Adds spacing above the container */
+/* Section styles */
+.filter-section, .info-section, .filtered-section {
+    flex: 1;
+    padding: 20px;
 }
 
-.name {
-    text-align: center; /* Aligns our text in the center */
+.filter-section, .filtered-section {
+    border-right: 1px solid #ccc;
+}
+
+/* Image styles */
+.info-section img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
 }
