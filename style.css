@@ -1,0 +1,74 @@
+/* Base styles */
+body {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+/* Container for main content */
+.main-content {
+    display: flex;
+    flex-direction: row; /* Arrange sections horizontally */
+    flex: 1;
+}
+
+/* Filter section styles */
+.filter-section {
+    display: flex;
+    flex-direction: column; /* Arrange filters vertically */
+    padding: 20px;
+    border-right: 1px solid #ccc;
+}
+
+
+.Main_Head {
+    text-align: center; /* Aligns our text in the center */
+}
+
+.Heading_Two {
+    text-align: left;
+}
+
+
+/* Section styles */
+.info-section, .filtered-section {
+    flex: 1;
+    padding: 20px;
+}
+
+.filtered-section {
+    border-right: 1px solid #ccc;
+}
+
+/* Image styles */
+.info-section img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+#title-info {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+    background-color: #38e06d;
+    color: #1518ad;
+    padding: 10px;
+}

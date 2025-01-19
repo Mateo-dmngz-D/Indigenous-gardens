@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flower Information</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="filter-section">
+    <h2>Filter Flowers</h2>
+    <label for="flower-type">Type:</label>
+    <select id="flower-type">
+    </select>
+    <br><br>
+    <label for="flower-color">Color:</label>
+    <select id="flower-color">
+    </select>
+    <br><br>
+    <label for="flower-bloom_period">Bloom Period:</label>
+    <select id="flower-bloom_period">
+    </select>
+    <br><br>
+    <button onclick="filterFlowers()">Filter</button>
+  </div>
+  
+  <div class="filtered-section">
+    <h2>Filtered Flowers</h2>
+    <table id="flower-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Latin Name</th>
+          <th>Common Name</th>
+          <th>Color</th>
+          <th>Bloom Period</th>
+          <th>Select</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-section">
+    <h2>Flower Information</h2>
+    <div id="flower-info">
+      <h3>Type: </h3>
+      <p>Latin Name: </p>
+      <p>Common Name: </p>
+      <p>Color: </p>
+      <p>Bloom Period: </p>
+      <img src="" alt=""a>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
