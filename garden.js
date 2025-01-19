@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 let width = (window.innerWidth);
 canvas.width = width;
 let height = (window.innerHeight);
-canvas.height = height;
+canvas.height = height/2;
 
 //button setup
 const clearButton = document.querySelector("#clear_garden");
